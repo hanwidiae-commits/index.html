@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HANWIDIAE DEPLOY — Tempat Berkarya & Bertumbuh</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+        :root{
+            --tiktok-cyan: #25F4EE;
+            --tiktok-magenta: #FF0050;
+            --tiktok-purple: #7C3AED;
+            --pemilik: #FFD700;
+            --bg-dark: #0F0F1A;
+            --bg-card: #1A1A2E;
+            --text-light: #E9E9F0;
+            --text-muted: #9CA3AF;
+            --sukses: #22C55E;
+        }
+        body{background:linear-gradient(135deg,var(--bg-dark),#1E1B4B);color:var(--text-light);min-height:100vh;}
+        .container{max-width:720px;margin:0 auto;padding:20px;}
+        
+        /* HEADER */
+        .header{text-align:center;padding:25px 0;border-bottom:1px solid #2D2D42;margin-bottom:20px;}
+        .logo{font-size:26px;font-weight:bold;}
+        .logo span{background:linear-gradient(90deg,var(--tiktok-cyan),var(--tiktok-magenta));-webkit-background-clip:text;color:transparent;}
+        .tagline{color:var(--text-muted);margin-top:8px;font-size:14px;}
+        
+        /* NOTIFIKASI OTOMATIS IKUT PEMILIK */
+        .notifikasi-ikut{
+            background:rgba(37,244,238,0.1);border:1px solid var(--tiktok-cyan);
+            border-radius:10px;padding:12px 16px;margin-bottom:18px;font-size:14px;display:none;
+        }
+        
+        /* LABEL PEMILIK */
+        .label-pemilik{
+            display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:bold;
+            background:linear-gradient(90deg,var(--pemilik),#FFA500);color:#000;margin-left:6px;
+        }
+        
+        /* TABS */
+        .tabs{display:flex;gap:6px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px;}
+        .tab{padding:10px 14px;border-radius:20px;background:var(--bg-card);cursor:pointer;white-space:nowrap;transition:0.3s;border:2px solid transparent;font-size:14px;}
+        .tab.active{border-color:var(--tiktok-cyan);background:linear-gradient(90deg,rgba(37,244,238,0.1),rgba(255,0,80,0.1));font-weight:bold;}
+        
+        /* KONTEN */
+        .tab-content{display:none;animation:fadeIn 0.35s ease;}
+        .tab-content.active{display:block;}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+        
+        /* KARTU */
+        .card{background:var(--bg-card);border-radius:16px;padding:20px;margin-bottom:18px;border:1px solid #2D2D42;}
+        .card h3{margin-bottom:15px;display:flex;align-items:center;gap:8px;font-size:18px;}
+        .form-group{margin-bottom:15px;}
+        label{display:block;margin-bottom:6px;color:#D1D5DB;font-weight:500;font-size:14px;}
+        input, textarea, select{
+            width:100%;padding:12px;border-radius:10px;border:1px solid #3F3F55;
+            background:#0F0F1A;color:#fff;font-size:15px;outline:none;
+        }
+        input:focus, textarea:focus, select:focus{border-color:var(--tiktok-cyan);box-shadow:0 0 0 2px rgba(37,244,238,0.2);}
+        
+        /* TOMBOL */
+        .btn{padding:12px 20px;border-radius:10px;border:none;font-size:14px;font-weight:bold;cursor:pointer;transition:0.3s;}
+        .btn-pemilik{background:linear-gradient(90deg,var(--pemilik),#FFA500);color:#000;width:100%;margin-top:5px;}
+        .btn-primary{background:linear-gradient(90deg,var(--tiktok-cyan),var(--tiktok-purple));color:#000;width:100%;margin-top:5px;}
+        .btn-follow{background:transparent;border:2px solid var(--tiktok-cyan);color:var(--tiktok-cyan);padding:8px 16px;border-radius:20px;font-size:13px;}
+        .btn-follow.following{background:rgba(37,244,238,0.15);border-color:transparent;color:#fff;}
+        .btn-share{background:transparent;border:2px solid var(--tiktok-purple);color:var(--tiktok-purple);padding:6px 12px;border-radius:20px;font-size:13px;}
+        .btn-like{background:transparent;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:4px;font-size:14px;padding:6px 10px;border-radius:20px;}
+        .btn-like.liked{color:var(--tiktok-magenta);}
+        
+        /* PROFIL & POSTINGAN */
+        .profile-card{background:#161629;border-radius:14px;padding:18px;margin-bottom:15px;}
+        .profile-card.pemilik{border:2px solid var(--pemilik);background:linear-gradient(135deg,rgba(255,215,0,0.05),#161629);}
+        .profile-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;}
+        .profile-avatar{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--tiktok-cyan),var(--tiktok-magenta));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+        .profile-avatar.pemilik-avatar{background:linear-gradient(135deg,var(--pemilik),#FFA500);}
+        .profile-info{flex:1;}
+        .profile-name{font-weight:bold;font-size:16px;}
+        .profile-role{font-size:13px;color:var(--text-muted);margin-top:2px;}
+        .profile-bio{font-size:14px;color:#ccc;margin:8px 0 10px;line-height:1.6;}
+        .profile-link{color:var(--tiktok-cyan);font-size:14px;text-decoration:none;display:inline-block;margin-bottom:10px;}
+        
+        /* POSTINGAN */
+        .post-box{background:#1E1E35;border-radius:12px;padding:14px;margin:12px 0;}
+        .post-box.pemilik-post{border-left:3px solid var(--pemilik);}
+        .post-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
+        .post-author{font-weight:bold;font-size:14px;}
+        .post-time{font-size:12px;color:var(--text-muted);}
+        .post-text{font-size:15px;line-height:1.7;margin-bottom:12px;white-space:pre-wrap;}
+        .post-actions{display:flex;gap:12px;align-items:center;padding-top:10px;border-top:1px solid #2D2D42;}
+        
+        /* KOMENTAR */
+        .comment-section{margin-top:12px;padding-top:12px;border-top:1px solid #2D2D42;}
+        .comment-input{display:flex;gap:8px;margin-bottom:10px;}
+        .comment-input input{flex:1;}
+        .comment-item{background:#252540;border-radius:8px;padding:10px;margin-bottom:8px;}
+        .comment-item.pemilik-komen{border-left:2px solid var(--pemilik);}
+        .comment-from{font-weight:bold;font-size:13px;color:var(--tiktok-cyan);margin-bottom:4px;}
+        .comment-from.pemilik-dari{color:var(--pemilik);}
+        .comment-text{font-size:14px;}
+        .comment-time{font-size:11px;color:var(--text-muted);margin-top:4px;}
+        
+        /* OBROLAN */
+        .chat-box{background:#161629;border-radius:12px;overflow:hidden;}
+        .chat-header{padding:12px;background:#1E1E35;border-bottom:1px solid #2D2D42;font-weight:bold;text-align:center;}
+        .chat-body{padding:15px;height:350px;overflow-y:auto;}
+        .chat-bubble{max-width:80%;padding:10px 14px;border-radius:18px;margin-bottom:10px;line-height:1.5;}
+        .chat-other{background:#252540;border-bottom-left-radius:4px;}
+        .chat-me{background:linear-gradient(90deg,var(--tiktok-purple),var(--tiktok-magenta));border-bottom-right-radius:4px;margin-left:auto;}
+        .chat-pemilik{background:linear-gradient(90deg,var(--pemilik),#FFA500);color:#000;border-bottom-right-radius:4px;margin-left:auto;}
+        .chat-meta{font-size:11px;color:var(--text-muted);margin-top:4px;text-align:right;}
+        .chat-input-area{display:flex;gap:8px;padding:12px;border-top:1px solid #2D2D42;}
+        .chat-input-area input{flex:1;}
+        
+        /* STATUS & LAINNYA */
+        .status{margin-top:12px;padding:10px;border-radius:8px;display:none;font-size:14px;}
+        .status.sukses{background:rgba(34,197,94,0.1);border:1px solid var(--sukses);color:#86EFAC;display:block;}
+        .status.info{background:rgba(37,244,238,0.1);border:1px solid var(--tiktok-cyan);color:#A5F3EF;display:block;}
+        .empty-state{text-align:center;padding:30px;color:var(--text-muted);}
+        .followers-count{font-size:13px;color:var(--text-muted);margin-left:8px;}
+        .footer{text-align:center;margin-top:30px;padding:20px;color:var(--text-muted);font-size:12px;border-top:1px solid #2D2D42;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="logo">👑 <span>HANWIDIAE DEPLOY</span></div>
+            <p class="tagline">Tempat Berkarya · Bertumbuh · Berbagi — Semua Postingan Terlihat Bersama ✨</p>
+        </div>
+
+        <!-- NOTIFIKASI OTOMATIS IKUT PEMILIK -->
+        <div class="notifikasi-ikut" id="kotakNotifikasi">
+            ✅ Kamu mengikuti <strong id="namaPemilikTampil"></strong> — Pendiri & Pemilik tempat ini!
+        </div>
+
+        <!-- MENU -->
+        <div class="tabs">
+            <div class="tab active" data-tab="profil">👤 Profil Saya</div>
+            <div class="tab" data-tab="beranda">📰 Semua Postingan</div>
+            <div class="tab" data-tab="obrolan">💬 Ruang Obrolan</div>
+            <div class="tab" data-tab="dukung">💎 Dukung</div>
+        </div>
+
+        <!-- 1. PROFIL -->
+        <div class="tab-content active" id="profil">
+            <div class="card">
+                <h3>✍️ Tulis Postingan Baru</h3>
+                <p style="color:var(--text-muted);margin-bottom:18px;font-size:14px;">
+                    Tulismu akan langsung tampil di halaman utama untuk semua pengunjung ✅<br>
+                    <em>Like & Bagikan dilakukan secara sukarela — tidak dipaksa</em>
+                </p>
+                
+                <div class="form-group">
+                    <label>Nama / Nama Akun</label>
+                    <input type="text" id="namaKreator" placeholder="Nama kamu...">
+                </div>
+                <div class="form-group">
+                    <label>Tautan Akun TikTok</label>
+                    <input type="url" id="linkTiktok" placeholder="https://www.tiktok.com/@...">
+                </div>
+                <div class="form-group">
+                    <label>Peran</label>
+                    <select id="jenisKonten">
+                        <option value="Pendiri & Pemilik Situs">⭐ Pendiri & Pemilik Situs</option>
+                        <option value="Kreator">🎤 Kreator</option>
+                        <option value="Kreator Pemula">🌱 Kreator Pemula</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cerita Singkat / Bio</label>
+                    <textarea id="bioKreator" rows="2" placeholder="Siapa kamu..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>📢 Tulisan / Kabar / Postingan</label>
+                    <textarea id="postBaru" rows="4" placeholder="Tulis pesan, ide, atau kabar untuk semua orang..."></textarea>
+                </div>
+                <button class="btn-pemilik btn" id="simpanProfil">📤 Posting ke Semua Orang</button>
+                <div class="status" id="statusProfil"></div>
+            </div>
+        </div>
+
+        <!-- 2. BERANDA — SEMUA POSTINGAN -->
+        <div class="tab-content" id="beranda">
+            <div class="card">
+                <h3>📰 Postingan Semua Orang</h3>
+                <p style="color:var(--text-muted);margin-bottom:15px;font-size:14px;">
+                    👑 Pemilik selalu di paling atas · Suka & Bagikan atas kemauan sendiri
+                </p>
+                <div id="daftarPostingan">
+                    <div class="empty-state">Belum ada postingan. Jadilah yang pertama! ✨</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. RUANG OBROLAN -->
+        <div class="tab-content" id="obrolan">
+            <div class="card">
+                <h3>💬 Ruang Obrolan Bersama</h3>
+                <p style="color:var(--text-muted);margin-bottom:15px;font-size:14px;">Saling menyapa & berbagi ide — tidak dipaksa</p>
+                <div class="chat-box">
+                    <div class="chat-header">Semua Kreator — Satu Ruang</div>
+                    <div class="chat-body" id="badanObrolan">
+                        <div class="empty-state">Belum ada pesan. Sapa duluan ya! 👋</div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="inputObrolan" placeholder="Tulis pesanmu..." onkeypress="if(event.key==='Enter')kirimObrolan()">
+                        <button class="btn-primary btn" onclick="kirimObrolan()" style="width:auto;padding:12px 18px;">Kirim</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. DUKUNG / DONASI -->
+        <div class="tab-content" id="dukung">
+            <div class="card">
+                <h3>💎 Dukung Tempat Ini</h3>
+                <p style="color:var(--text-muted);margin-bottom:15px;line-height:1.6;">
+                    Jika tempat ini bermanfaat bagimu, kamu bisa memberikan dukungan sukarela agar terus tumbuh dan berkembang.<br>
+                    <em>Dukunganmu menjadi semangat kami untuk terus bantu sesama kreator ✨</em>
+                </p>
+                <div class="form-group">
+                    <label>Nomor Rekening / QRIS Pemilik</label>
+                    <input type="text" id="infoDukung" placeholder="Akan diisi otomatis oleh Pemilik..." readonly style="background:#252540;cursor:default;">
+                </div>
+                <p style="font-size:13px;color:var(--text-muted);margin-top:10px;">
+                    💡 <strong>Catatan Pemilik:</strong> Isi nomor rekening/QRIS di bagian kode sebelum unggah ke GitHub
+                </p>
+            </div>
+        </div>
+
+        <!-- KAKI HALAMAN -->
+        <div class="footer">
+            👑 HANWIDIAE DEPLOY — Tempat Berkarya & Bertumbuh<br>
+            <span style="color:#6B7280;">Postingan terlihat bersama · Suka & Bagikan sukarela</span>
+        </div>
+    </div>
+
+    <script>
+        // === DATA ===
+        let profilSaya = JSON.parse(localStorage.getItem('profilSaya') || '{}');
+        let daftarAkun = JSON.parse(localStorage.getItem('daftarAkun') || '[]');
+        let daftarObrolan = JSON.parse(localStorage.getItem('daftarObrolan') || '[]');
+        
+        // === PENGATURAN PEMILIK — ISI DI SINI JIKA INGIN MENGUBAH ===
+        const INFO_DUKUNG_PEMILIK = 'BRI: 1234567890 a.n. Pemilik / QRIS: [Tempelkan di sini]';
+        document.getElementById('infoDukung').value = INFO_DUKUNG_PEMILIK || 'Belum diatur';
+
+        // === AMBIL DATA PEMILIK UTAMA ===
+        function dapatkanPemilikUtama(){
+            const link = localStorage.getItem('PEMILIK_LINK');
+            const nama = localStorage.getItem('PEMILIK_NAMA');
+            return link ? {link, nama} : null;
+        }
+
+        // === OTOMATIS MENGIKUTI PEMILIK (HANYA SAAT PERTAMA KALI) ===
+        let sudahIkut = localStorage.getItem('SUDAH_IKUT_PEMILIK');
+        function prosesIkutOtomatis(){
+            if(sudahIkut === 'ya') return;
+            const pemilik = dapatkanPemilikUtama();
+            if(!pemilik || !profilSaya.link) return;
+            if(profilSaya.link === pemilik.link) return;
+            
+            const idxPemilik = daftarAkun.findIndex(a => a.link === pemilik.link);
+            if(idxPemilik !== -1){
+                if(!daftarAkun[idxPemilik].pengikut) daftarAkun[idxPemilik].pengikut = [];
+                if(!daftarAkun[idxPemilik].pengikut.includes(profilSaya.link)){
+                    daftarAkun[idxPemilik].pengikut.push(profilSaya.link);
+                    localStorage.setItem('daftarAkun', JSON.stringify(daftarAkun));
+                    document.getElementById('namaPemilikTampil').textContent = pemilik.nama;
+                    document.getElementById('kotakNotifikasi').style.display = 'block';
+                    localStorage.setItem('SUDAH_IKUT_PEMILIK', 'ya');
+                }
+            }
+        }
+
+        // === PILIH TAB ===
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+                if(tab.dataset.tab === 'beranda') renderBeranda();
+                if(tab.dataset.tab === 'obrolan') renderObrolan();
+            });
+        });
+
+        // === ISI DATA JIKA SUDAH ADA ===
+        if(profilSaya.nama){
+            document.getElementById('namaKreator').value = profilSaya.nama;
+            document.getElementById('linkTiktok').value = profilSaya.link;
+            document.getElementById('jenisKonten').value = profilSaya.jenis || '';
+            document.getElementById('bioKreator').value = profilSaya.bio || '';
+            document.getElementById('postBaru').value = profilSaya.postTerbaru || '';
+        }
+
+        // === SIMPAN & POSTING ===
+        document.getElementById('simpanProfil').addEventListener('click', () => {
+            const nama = document.getElementById('namaKreator').value.trim();
+            const link = document.getElementById('linkTiktok').value.trim();
+            const jenis = document.getElementById('jenisKonten').value;
+            const bio = document.getElementById('bioKreator').value.trim();
+            const postBaru = document.getElementById('postBaru').value.trim();
+            const elStatus = document.getElementById('statusProfil');
+
+            if(!nama || !link){
+                elStatus.className = 'status info';
+                elStatus.textContent = '⚠️ Isi Nama & Tautan TikTok dulu ya!';
+                return;
+            }
+
+            const adalahPemilik = jenis.includes('Pemilik') || jenis.includes('Pendiri');
+            
+            profilSaya = {
+                nama, link, jenis, bio, postTerbaru: postBaru,
+                waktuUpdate: new Date().toLocaleString('id-ID'),
+                pengikut: profilSaya.pengikut || [],
+                mengikuti: profilSaya.mengikuti || [],
+                suka: profilSaya.suka || {},
+                komentar: profilSaya.komentar || [],
+                pemilik: adalahPemilik
+            };
+
+            // Tetapkan sebagai pemilik utama
+            if(adalahPemilik){
+                localStorage.setItem('PEMILIK_LINK', link);
+                localStorage.setItem('PEMILIK_NAMA', nama);
+            }
+
+            localStorage.setItem('LINK_PENGUNJUNG', link);
+
+            // Simpan/update daftar
+            const idx = daftarAkun.findIndex(a => a.link === link);
+            if(idx === -1) daftarAkun.unshift(profilSaya);
+            else daftarAkun[idx] = {...daftarAkun[idx], ...profilSaya};
+
+            localStorage.setItem('profilSaya', JSON.stringify(profilSaya));
+            localStorage.setItem('daftarAkun', JSON.stringify(daftarAkun));
+            
+            elStatus.className = 'status sukses';
+            elStatus.textContent = '✅ Berhasil Diposting! Semua orang bisa melihatnya 🎉';
+            
+            renderBeranda();
+            prosesIkutOtomatis();
+            
+            // Bersihkan kolom tulisan
+            setTimeout(() => {
+                document.getElementById('postBaru').value = '';
+                elStatus.style.display = 'none';
+            }, 3000);
+        });
+
+        // === TAMPILKAN SEMUA POSTINGAN ===
+        function renderBeranda(){
+            const pemilik = dapatkanPemilikUtama();
+            const wadah = document.getElementById('daftarPostingan');
+            
+            if(daftarAkun.length === 0){
+                wadah.innerHTML = '<div class="empty-state">Belum ada postingan. Jadilah yang pertama! ✨</div>';
+                return;
+            }
+
+            // Urutkan: Pemilik paling atas, lalu yang terbaru
+            daftarAkun.sort((a, b) => {
+                if(pemilik && a.link === pemilik.link) return -1;
+                if(pemilik && b.link === pemilik.link) return 1;
+                return new Date(b.waktuUpdate || 0) - new Date(a.waktuUpdate || 0);
+            });
+
+            wadah.innerHTML = daftarAkun.map((akun, i) => {
+                const akunPemilik = pemilik && akun.link === pemilik.link;
+                const sudahIkut = profilSaya.mengikuti?.includes(akun.link);
+                const sudahSuka = akun.suka?.[profilSaya.link] === true;
+
+                return `
+                <div class="profile-card ${akunPemilik ? 'pemilik' : ''}">
+                    <div class="profile-head">
+                        <div class="profile-avatar ${akunPemilik ? 'pemilik-avatar' : ''}">👤</div>
+                        <div class="profile-info">
+                            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+                                <span class="profile-name">${akun.nama}</span>
+                                ${akunPemilik ? '<span class="label-pemilik">👑 PEMILIK</span>' : ''}
+                                ${!akunPemilik ? `
+                                <button class="btn-follow ${sudahIkut ? 'following' : ''}" onclick="toggleIkut(${i})">
+                                    ${sudahIkut ? '✓ Mengikuti' : '+ Ikuti'}
+                                </button>
+                                ` : ''}
+                            </div>
+                            <div class="profile-role">${akun.jenis || 'Kreator'} 
+                                <span class="followers-count">❤️ ${(akun.pengikut || []).length} pengikut</span>
+                            </div>
+                            ${akun.bio ? `<p class="profile-bio">${akun.bio}</p>` : ''}
+                            <a href="${akun.link}" target="_blank" class="profile-link">🔗 Buka TikTok &rarr;</a>
+                        </div>
+                    </div>
+
+                    ${akun.postTerbaru ? `
+                    <div class="post-box ${akunPemilik ? 'pemilik-post' : ''}">
+                        <div class="post-header">
+                            <span class="post-author">${akun.nama} ${akunPemilik ? '<span style="color:var(--pemilik);font-size:11px;">· Pemilik</span>' : ''}</span>
+                            <span class="post-time">${akun.waktuUpdate || ''}</span>
+                        </div>
+                        <p class="post-text">${akun.postTerbaru}</p>
+                        
+                        <div class="post-actions">
+                            <button class="btn-like ${sudahSuka ? 'liked' : ''}" onclick="toggleSuka(${i})">
+                                ❤️ ${Object.keys(akun.suka || {}).length}
+                            </button>
+                            <button class="btn-share" onclick="bagikanPost(${i})">🔁 Bagikan</button>
+                            <button class="btn-like" onclick="document.getElementById('komentar-${i}').style.display='block'">💬 Komentar</button>
+                        </div>
+                        
+                        <div class="comment-section" id="komentar-${i}" style="display:none;">
+                            <div class="comment-input">
+                                <input type="text" id="inputKomen-${i}" placeholder="Tulis komentarmu..." onkeypress="if(event.key==='Enter')kirimKomen(${i})">
+                                <button class="btn-primary btn" onclick="kirimKomen(${i})" style="width:auto;padding:8px 12px;font-size:13px;">Kirim</button>
+                            </div>
+                            <div>
+                                ${(akun.komentar || []).map(k => `
+                                    <div class="comment-item ${k.dariPemilik ? 'pemilik-komen' : ''}">
+                                        <div class="comment-from ${k.dariPemilik ? 'pemilik-dari' : ''}">
+                                            ${k.dari} ${k.dariPemilik ? '👑 Pemilik' : ''}
+                                        </div>
+                                        <div class="comment-text">${k.teks}</div>
+                                        <div class="comment-time">${k.waktu}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+                `;
+            }).join('');
+        }
+
+        // === IKUTI / BERHENTI ===
+        window.toggleIkut = function(i){
+            if(!profilSaya.link){alert('Lengkapi Profil dulu ya!');return;}
+            const akun = daftarAkun[i];
+            const idx = akun.pengikut?.indexOf(profilSaya.link);
+            if(idx === -1){
+                if(!akun.pengikut) akun.pengikut = [];
+                akun.pengikut.push(profilSaya.link);
+                if(!profilSaya.mengikuti) profilSaya.mengikuti = [];
+                profilSaya.mengikuti.push(akun.link);
+            } else {
+                akun.pengikut.splice(idx, 1);
+                const idx2 = profilSaya.mengikuti?.indexOf(akun.link);
+                if(idx2 !== -1) profilSaya.mengikuti.splice(idx2, 1);
+            }
+            localStorage.setItem('daftarAkun', JSON.stringify(daftarAkun));
+            localStorage.setItem('profilSaya', JSON.stringify(profilSaya));
+            renderBeranda();
+        };
+
+        // === SUKA / BATAL — SUKARELA ===
+        window.toggleSuka = function(i){
+            if(!profilSaya.link){alert('Lengkapi Profil dulu ya!');return;}
+            const akun = daftarAkun[i];
+            if(!akun.suka) akun.suka = {};
+            akun.suka[profilSaya.link] = !akun.suka[profilSaya.link];
+            if(!akun.suka[profilSaya.link]) delete akun.suka[profilSaya.link];
+            localStorage.setItem('daftarAkun', JSON.stringify(daftarAkun));
+            renderBeranda();
+        };
+
+        // === BAGIKAN — SUKARELA ===
+        window.bagikanPost = function(i){
+            const akun = daftarAkun[i];
+            const teks = `👑 Dari HANWIDIAE DEPLOY — ${akun.nama}:\n\n${akun.postTerbaru || ''}\n\nLihat di: ${window.location.href}`;
+            if(navigator.share){
+                navigator.share({title: 'HANWIDIAE DEPLOY', text: teks});
+            } else {
+                navigator.clipboard.writeText(teks).then(() => alert('✅ Teks disalin! Bagikan ke mana saja ya 😊'));
+            }
+        };
+
+        // === KIRIM KOMENTAR ===
+        window.kirimKomen = function(i){
+            if(!profilSaya.link){alert('Lengkapi Profil dulu ya!');return;}
+            const input = document.getElementById(`inputKomen-${i}`);
+            const teks = input.value.trim();
+            if(!teks) return;
+            if(!daftarAkun[i].komentar) daftarAkun[i].komentar = [];
+            daftarAkun[i].komentar.push({
+                dari: profilSaya.nama,
+                teks,
+                waktu: new Date().toLocaleString('id-ID'),
+                dariPemilik: profilSaya.pemilik || false
+            });
+            localStorage.setItem('daftarAkun', JSON.stringify(daftarAkun));
+            renderBeranda();
+        };
+
+        // === OBROLAN ===
+        window.kirimObrolan = function(){
+            if(!profilSaya.nama){alert('Lengkapi Profil dulu ya!');return;}
+            const input = document.getElementById('inputObrolan');
+            const teks = input.value.trim();
+            if(!teks) return;
+            daftarObrolan.push({
+                dari: profilSaya.nama,
+                teks,
+                waktu: new Date().toLocaleString('id-ID'),
+                saya: true,
+                pemilik: profilSaya.pemilik || false
+            });
+            localStorage.setItem('daftarObrolan', JSON.stringify(daftarObrolan));
+            input.value = '';
+            renderObrolan();
+        };
+
+        function renderObrolan(){
+            const wadah = document.getElementById('badanObrolan');
+            if(daftarObrolan.length === 0){
+                wadah.innerHTML = '<div class="empty-state">Belum ada pesan. Sapa duluan ya! 👋</div>';
+                return;
+            }
+            wadah.innerHTML = daftarObrolan.map(p => `
+                <div class="chat-bubble ${p.saya ? (p.pemilik ? 'chat-pemilik' : 'chat-me') : 'chat-other'}">
+                    <strong>${p.dari} ${p.pemilik ? '👑 Pemilik' : ''}</strong><br>
+                    ${p.teks}
+                    <div class="chat-meta">${p.waktu}</div>
+                </div>
+            `).join('');
+            wadah.scrollTop = wadah.scrollHeight;
+        }
+
+        // === MULAI ===
+        renderBeranda();
+        prosesIkutOtomatis();
+    </script>
+</body>
+</html>
