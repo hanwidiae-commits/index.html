@@ -1,0 +1,457 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Kreatif Tool — Berkarya · Bertumbuh · Berbagi</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+        :root{
+            --tiktok: #000000;
+            --tiktok-cyan: #25F4EE;
+            --tiktok-magenta: #FF0050;
+            --tiktok-purple: #7C3AED;
+            --bg-dark: #0F0F1A;
+            --bg-card: #1A1A2E;
+            --text-light: #E9E9F0;
+            --text-muted: #9CA3AF;
+        }
+        body{background:linear-gradient(135deg,var(--bg-dark),#1E1B4B);color:var(--text-light);min-height:100vh;padding:0;}
+        .container{max-width:700px;margin:0 auto;padding:20px;}
+        
+        /* HEADER */
+        .header{text-align:center;padding:30px 0;border-bottom:1px solid #2D2D42;margin-bottom:30px;}
+        .logo{font-size:28px;font-weight:bold;}
+        .logo span{background:linear-gradient(90deg,var(--tiktok-cyan),var(--tiktok-magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .tagline{color:var(--text-muted);margin-top:8px;}
+        
+        /* TABS */
+        .tabs{display:flex;gap:8px;margin-bottom:25px;overflow-x:auto;padding-bottom:5px;}
+        .tab{padding:12px 18px;border-radius:30px;background:var(--bg-card);cursor:pointer;white-space:nowrap;transition:0.3s;border:2px solid transparent;}
+        .tab.active{border-color:var(--tiktok-cyan);background:linear-gradient(90deg,rgba(37,244,238,0.1),rgba(255,0,80,0.1));font-weight:bold;}
+        .tab:hover{transform:translateY(-2px);}
+        
+        /* KONTEN TAB */
+        .tab-content{display:none;animation:fadeIn 0.4s;}
+        .tab-content.active{display:block;}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+        
+        /* KARTU & BAGIAN */
+        .card{background:var(--bg-card);border-radius:16px;padding:25px;margin-bottom:20px;border:1px solid #2D2D42;}
+        .card h3{margin-bottom:15px;display:flex;align-items:center;gap:10px;}
+        .form-group{margin-bottom:18px;}
+        label{display:block;margin-bottom:8px;color:#D1D5DB;font-weight:500;}
+        input, textarea, select{width:100%;padding:14px;border-radius:10px;border:1px solid #3F3F55;background:#0F0F1A;color:#fff;font-size:15px;outline:none;}
+        input:focus, textarea:focus, select:focus{border-color:var(--tiktok-cyan);box-shadow:0 0 0 2px rgba(37,244,238,0.2);}
+        
+        /* TOMBOL */
+        .btn{padding:14px 24px;border-radius:10px;border:none;font-size:15px;font-weight:bold;cursor:pointer;transition:0.3s;width:100%;margin-top:8px;}
+        .btn-primary{background:linear-gradient(90deg,var(--tiktok-cyan),var(--tiktok-purple));color:#000;}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(37,244,238,0.3);}
+        .btn-secondary{background:transparent;border:2px solid var(--tiktok-magenta);color:var(--tiktok-magenta);}
+        .btn-secondary:hover{background:rgba(255,0,80,0.1);}
+        .btn-tiktok{background:linear-gradient(90deg,#000,#2D2D42);border:2px solid var(--tiktok-cyan);color:#fff;}
+        .btn-tiktok:hover{border-color:var(--tiktok-magenta);}
+        
+        /* KOTAK IDE & KARTU KREATOR */
+        .idea-box{background:#161629;border-radius:10px;padding:15px;margin-bottom:10px;border-left:3px solid var(--tiktok-cyan);}
+        .creator-card{display:flex;align-items:center;gap:15px;background:#161629;border-radius:12px;padding:15px;margin-bottom:12px;}
+        .creator-avatar{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--tiktok-cyan),var(--tiktok-magenta));display:flex;align-items:center;justify-content:center;font-size:20px;}
+        .creator-info{flex:1;}
+        .creator-name{font-weight:bold;}
+        .creator-bio{font-size:13px;color:var(--text-muted);margin-top:3px;}
+        .creator-link{color:var(--tiktok-cyan);font-size:13px;text-decoration:none;}
+        
+        /* DAFTAR IDE & WAKTU UNGGAH */
+        .time-slot{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #2D2D42;}
+        .tag{display:inline-block;padding:4px 10px;border-radius:20px;font-size:12px;margin:2px;background:rgba(124,58,237,0.3);}
+        
+        /* STATUS */
+        .status{margin-top:15px;padding:12px;border-radius:10px;display:none;}
+        .status.success{background:rgba(34,197,94,0.1);border:1px solid #22C55E;color:#86EFAC;display:block;}
+        .status.info{background:rgba(37,244,238,0.1);border:1px solid var(--tiktok-cyan);color:#A5F3EF;display:block;}
+        
+        /* NAV BAWAH */
+        .footer{text-align:center;margin-top:40px;padding:20px;color:var(--text-muted);font-size:13px;border-top:1px solid #2D2D42;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="logo">🎵 <span>TikTok Kreatif Tool</span></div>
+            <p class="tagline">Berkarya · Bertumbuh · Berbagi — Semua Kreator Bersama ✨</p>
+        </div>
+
+        <!-- MENU UTAMA -->
+        <div class="tabs">
+            <div class="tab active" data-tab="profil">👤 Profil Saya</div>
+            <div class="tab" data-tab="ide">💡 Bank Ide</div>
+            <div class="tab" data-tab="analisis">📈 Analisis & Tips</div>
+            <div class="tab" data-tab="dukung">🤝 Saling Dukung</div>
+            <div class="tab" data-tab="peluang">💰 Peluang</div>
+        </div>
+
+        <!-- ====================================== -->
+        <!-- BAGIAN 1: PROFIL KREATOR -->
+        <!-- ====================================== -->
+        <div class="tab-content active" id="profil">
+            <div class="card">
+                <h3>👤 Lengkapi Profilmu</h3>
+                <p style="color:var(--text-muted);margin-bottom:20px;">Tunjukkan siapa kamu — agar orang lain mengenal & ingin bekerja sama</p>
+                
+                <div class="form-group">
+                    <label>Nama Panggilan / Nama Akun</label>
+                    <input type="text" id="namaKreator" placeholder="Contoh: KaryaIndah99">
+                </div>
+
+                <div class="form-group">
+                    <label>Tautan Akun TikTok <span style="color:var(--tiktok-cyan)">*</span></label>
+                    <input type="url" id="linkTiktok" placeholder="https://www.tiktok.com/@namakamu">
+                </div>
+
+                <div class="form-group">
+                    <label>Jenis Konten Utama</label>
+                    <select id="jenisKonten">
+                        <option value="">— Pilih —</option>
+                        <option>🎤 Hiburan & Musik</option>
+                        <option>📚 Edukasi & Pengetahuan</option>
+                        <option>🎭 Komedi & Sketsa</option>
+                        <option>✨ Gaya Hidup & Inspirasi</option>
+                        <option>🎬 Kreatif & Seni</option>
+                        <option>📖 Cerita & Kisah</option>
+                        <option>💡 Keterampilan & Tutorial</option>
+                        <option>📸 Lainnya</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Ceritakan tentang dirimu</label>
+                    <textarea id="bioKreator" rows="3" placeholder="Saya suka membuat konten tentang..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Siap kolaborasi?</label>
+                    <select id="siapKolaborasi">
+                        <option value="ya">✅ Ya, terbuka untuk semua!</option>
+                        <option value="terbatas">🤝 Ya, dengan topik tertentu</option>
+                        <option="tidak">❌ Belum siap</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" id="simpanProfil">💾 Simpan Profil & Tampilkan</button>
+                <div class="status" id="statusProfil"></div>
+            </div>
+
+            <div class="card" id="daftarKreator">
+                <h3>🌟 Kreator Lainnya</h3>
+                <p style="color:var(--text-muted);margin-bottom:15px;">Temukan teman untuk berkarya bersama</p>
+                <div id="listKreator">
+                    <p style="color:var(--text-muted);text-align:center;padding:20px;">Jadilah yang pertama tampil di sini! ✨</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================================== -->
+        <!-- BAGIAN 2: BANK IDE -->
+        <!-- ====================================== -->
+        <div class="tab-content" id="ide">
+            <div class="card">
+                <h3>📅 Ide Konten Minggu Ini</h3>
+                <p style="color:var(--text-muted);margin-bottom:15px;">Pilih, sesuaikan, lalu unggah!</p>
+                
+                <div class="idea-box">
+                    <strong>🔥 Tantangan Mingguan</strong>
+                    <p style="color:var(--text-muted);margin-top:5px;">"Satu hal yang saya pelajari dan mengubah hidup saya" — ceritakan dengan tulus</p>
+                    <span class="tag">Inspiratif</span>
+                </div>
+
+                <div class="idea-box">
+                    <strong>🎵 Ikuti Tren Musik</strong>
+                    <p style="color:var(--text-muted);margin-top:5px;">Gunakan lagu yang sedang naik, sesuaikan dengan gaya kontenmu</p>
+                    <span class="tag">Musik</span>
+                </div>
+
+                <div class="idea-box">
+                    <strong>💬 Cerita Pengalaman</strong>
+                    <p style="color:var(--text-muted);margin-top:5px;">"Kesalahan yang pernah saya buat dan pelajaran yang saya ambil"</p>
+                    <span class="tag">Personal</span>
+                </div>
+
+                <div class="idea-box">
+                    <strong>✨ Langkah Kecil</strong>
+                    <p style="color:var(--text-muted);margin-top:5px;">Tunjukkan prosesmu — orang suka melihat perjalanan, bukan hanya hasil akhir</p>
+                    <span class="tag">Edukasi</span>
+                </div>
+
+                <button class="btn btn-secondary" id="ideBaru">🔄 Beri Ide Lainnya</button>
+            </div>
+
+            <div class="card">
+                <h3>✍️ Contoh Kalimat Pembuka Siap Pakai</h3>
+                <ul style="list-style:none;margin-top:10px;">
+                    <li style="padding:10px 0;border-bottom:1px solid #2D2D42;">"Siapa di sini yang pernah merasakan...?"</li>
+                    <li style="padding:10px 0;border-bottom:1px solid #2D2D42;">"Hari ini saya ingin berbagi sesuatu yang mengubah cara pandang saya..."</li>
+                    <li style="padding:10px 0;border-bottom:1px solid #2D2D42;">"Jangan lewatkan bagian akhirnya, ya..."</li>
+                    <li style="padding:10px 0;">"Kalau kamu setuju, simpan dan bagikan ke teman-temanmu ✨"</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ====================================== -->
+        <!-- BAGIAN 3: ANALISIS & WAKTU UNGGAH -->
+        <!-- ====================================== -->
+        <div class="tab-content" id="analisis">
+            <div class="card">
+                <h3>⏰ Waktu Terbaik Mengunggah</h3>
+                <p style="color:var(--text-muted);margin-bottom:15px;">Waktu Indonesia Barat (WIB)</p>
+                
+                <div class="time-slot">
+                    <span>🌅 Pagi</span>
+                    <span style="color:var(--tiktok-cyan);font-weight:bold;">07:00 – 09:00</span>
+                </div>
+                <div class="time-slot">
+                    <span>☀️ Siang</span>
+                    <span style="color:var(--tiktok-cyan);font-weight:bold;">11:30 – 13:00</span>
+                </div>
+                <div class="time-slot">
+                    <span>🌆 Sore</span>
+                    <span style="color:var(--tiktok-cyan);font-weight:bold;">16:00 – 17:30</span>
+                </div>
+                <div class="time-slot">
+                    <span>🌙 Malam</span>
+                    <span style="color:var(--tiktok-magenta);font-weight:bold;">19:00 – 21:00 ⭐ Terbaik</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📈 Cara Tumbuh Lebih Cepat</h3>
+                <ul style="margin-top:15px;line-height:1.8;">
+                    <li>✅ Unggah secara rutin — konsistensi lebih penting daripada jumlah</li>
+                    <li>✅ 3 detik pertama adalah kunci — buat menarik perhatian sejak awal</li>
+                    <li>✅ Gunakan suara/orisinal — bantu penyebaran lebih luas</li>
+                    <li>✅ Balas setiap komentar — interaksi meningkatkan jangkauan</li>
+                    <li>✅ Ikuti tren tapi tetap dengan gayamu sendiri</li>
+                    <li>✅ Simpan & bagikan — tanda kontenmu berharga</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>⚠️ Hal yang Harus Dihindari</h3>
+                <ul style="margin-top:15px;line-height:1.8;color:#FCA5A5;">
+                    <li>❌ Mengunggah ulang konten orang lain tanpa izin</li>
+                    <li>❌ Judul atau gambar yang menipu</li>
+                    <li>❌ Konten yang melanggar aturan atau tidak pantas</li>
+                    <li>❌ Membeli suka/pengikut palsu — merugikan akunmu sendiri</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ====================================== -->
+        <!-- BAGIAN 4: SALING DUKUNG -->
+        <!-- ====================================== -->
+        <div class="tab-content" id="dukung">
+            <div class="card">
+                <h3>🤝 Bagikan Konten Terbarumu</h3>
+                <p style="color:var(--text-muted);margin-bottom:15px;">Tempel tautan videomu, biar kita sama tonton & dukung!</p>
+                
+                <div class="form-group">
+                    <label>Tautan Video TikTok</label>
+                    <input type="url" id="linkVideo" placeholder="https://www.tiktok.com/@namakamu/video/...">
+                </div>
+                <div class="form-group">
+                    <label>Singkatnya tentang apa video ini?</label>
+                    <input type="text" id="deskripsiVideo" placeholder="Contoh: Cerita tentang keberanian memulai sesuatu yang baru">
+                </div>
+                <button class="btn btn-primary" id="bagikanVideo">📤 Bagikan</button>
+                <div class="status" id="statusBagikan"></div>
+            </div>
+
+            <div class="card">
+                <h3>❤️ Konten Teman-teman</h3>
+                <p style="color:var(--text-muted);margin-bottom:15px;">Tonton, beri suka, dan tinggalkan komentar yang membangun</p>
+                <div id="daftarVideo">
+                    <p style="color:var(--text-muted);text-align:center;padding:20px;">Jadilah yang pertama membagikan kontenmu! ✨</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================================== -->
+        <!-- BAGIAN 5: PELUANG -->
+        <!-- ====================================== -->
+        <div class="tab-content" id="peluang">
+            <div class="card">
+                <h3>💰 Cara Mendapat Penghasilan dari Karya</h3>
+                <ul style="margin-top:15px;line-height:1.8;">
+                    <li><strong>🎵 Program Kreator</strong> — ikuti syarat jumlah pengikut & tayangan yang ditetapkan TikTok</li>
+                    <li><strong>🤝 Kerja Sama/Merek</strong> — bangun kepercayaan, merek akan menghubungimu</li>
+                    <li><strong>🛍️ Jual Karya/Jasa</strong> — tawarkan keahlianmu di profil & deskripsi video</li>
+                    <li><strong>💎 Hadiah Langsung</strong> — penonton memberikan hadiah virtual saat siaran langsung</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>📋 Hak Cipta & Aturan Aman</h3>
+                <ul style="margin-top:15px;line-height:1.8;">
+                    <li>✅ Buat konten dengan gayamu sendiri — paling aman & paling berkembang</li>
+                    <li>✅ Gunakan musik yang tersedia di perpustakaan suara TikTok</li>
+                    <li>✅ Jika mengutip orang lain, cantumkan sumbernya</li>
+                    <li>✅ Jangan takut memulai — semua kreator hebat pernah di posisimu sekarang</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>📢 Lowongan Kerja Sama</h3>
+                <p style="color:var(--text-muted);margin-bottom:15px;">Tempat berbagi peluang — bebas biaya, hati-hati penipuan!</p>
+                <button class="btn btn-tiktok" onclick="alert('Fitur akan segera dibuka! Pantau terus ya ✨')">➕ Tambahkan Peluang Baru</button>
+            </div>
+        </div>
+
+        <!-- KAKI HALAMAN -->
+        <div class="footer">
+            🎵 TikTok Kreatif Tool — Berkarya · Bertumbuh · Berbagi<br>
+            <span style="color:#6B7280;font-size:11px;">Tidak berafiliasi secara langsung dengan TikTok. Semua konten adalah milik masing-masing kreator.</span>
+        </div>
+    </div>
+
+    <script>
+        // Data tersimpan di perangkat pengunjung
+        let daftarKreator = JSON.parse(localStorage.getItem('daftarKreator') || '[]');
+        let daftarVideo = JSON.parse(localStorage.getItem('daftarVideo') || '[]');
+        let profilSaya = JSON.parse(localStorage.getItem('profilSaya') || '{}');
+
+        // === FUNGSI TAB ===
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // === PROFIL ===
+        renderDaftarKreator();
+        if(profilSaya.nama){
+            document.getElementById('namaKreator').value = profilSaya.nama || '';
+            document.getElementById('linkTiktok').value = profilSaya.link || '';
+            document.getElementById('jenisKonten').value = profilSaya.jenis || '';
+            document.getElementById('bioKreator').value = profilSaya.bio || '';
+            document.getElementById('siapKolaborasi').value = profilSaya.kolaborasi || 'ya';
+        }
+
+        document.getElementById('simpanProfil').addEventListener('click', () => {
+            const nama = document.getElementById('namaKreator').value.trim();
+            const link = document.getElementById('linkTiktok').value.trim();
+            const jenis = document.getElementById('jenisKonten').value;
+            const bio = document.getElementById('bioKreator').value.trim();
+            const kolaborasi = document.getElementById('siapKolaborasi').value;
+            const elStatus = document.getElementById('statusProfil');
+
+            if(!nama || !link){
+                elStatus.className = 'status info';
+                elStatus.textContent = '⚠️ Isi Nama dan Tautan TikTok dulu ya!';
+                return;
+            }
+
+            profilSaya = { nama, link, jenis, bio, kolaborasi, waktu: new Date().toLocaleString('id-ID') };
+            localStorage.setItem('profilSaya', JSON.stringify(profilSaya));
+
+            // Tambahkan ke daftar kreator lain jika belum ada
+            const sudahAda = daftarKreator.find(k => k.link === link);
+            if(!sudahAda){
+                daftarKreator.unshift(profilSaya);
+                localStorage.setItem('daftarKreator', JSON.stringify(daftarKreator));
+            } else {
+                // Perbarui data
+                daftarKreator = daftarKreator.map(k => k.link === link ? profilSaya : k);
+                localStorage.setItem('daftarKreator', JSON.stringify(daftarKreator));
+            }
+
+            elStatus.className = 'status success';
+            elStatus.textContent = '✅ Profil tersimpan! Kamu tampil di daftar kreator 🎉';
+            renderDaftarKreator();
+        });
+
+        function renderDaftarKreator(){
+            const wadah = document.getElementById('listKreator');
+            if(daftarKreator.length === 0){
+                wadah.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:20px;">Jadilah yang pertama tampil di sini! ✨</p>';
+                return;
+            }
+            wadah.innerHTML = daftarKreator.map(k => `
+                <div class="creator-card">
+                    <div class="creator-avatar">👤</div>
+                    <div class="creator-info">
+                        <div class="creator-name">${k.nama}</div>
+                        <div class="creator-bio">${k.jenis || 'Kreator TikTok'} · ${k.kolaborasi === 'ya' ? '✅ Siap kolaborasi' : k.kolaborasi === 'terbatas' ? '🤝 Kolaborasi terbatas' : 'Belum siap'}</div>
+                        <a href="${k.link}" target="_blank" class="creator-link">🔗 Buka TikTok &rarr;</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // === BAGIKAN VIDEO ===
+        renderDaftarVideo();
+        document.getElementById('bagikanVideo').addEventListener('click', () => {
+            const link = document.getElementById('linkVideo').value.trim();
+            const deskripsi = document.getElementById('deskripsiVideo').value.trim() || 'Konten menarik';
+            const elStatus = document.getElementById('statusBagikan');
+
+            if(!link){
+                elStatus.className = 'status info';
+                elStatus.textContent = '⚠️ Tempel tautan videomu dulu ya!';
+                return;
+            }
+
+            daftarVideo.unshift({
+                link,
+                deskripsi,
+                pengirim: profilSaya.nama || 'Kreator',
+                waktu: new Date().toLocaleString('id-ID')
+            });
+            localStorage.setItem('daftarVideo', JSON.stringify(daftarVideo));
+
+            elStatus.className = 'status success';
+            elStatus.textContent = '✅ Berhasil dibagikan! Semua bisa tonton sekarang 🎉';
+            document.getElementById('linkVideo').value = '';
+            document.getElementById('deskripsiVideo').value = '';
+            renderDaftarVideo();
+        });
+
+        function renderDaftarVideo(){
+            const wadah = document.getElementById('daftarVideo');
+            if(daftarVideo.length === 0){
+                wadah.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:20px;">Jadilah yang pertama membagikan kontenmu! ✨</p>';
+                return;
+            }
+            wadah.innerHTML = daftarVideo.map(v => `
+                <div class="idea-box">
+                    <strong>${v.deskripsi}</strong>
+                    <p style="font-size:13px;color:var(--text-muted);margin:5px 0;">Dibagikan oleh: ${v.pengirim} · ${v.waktu}</p>
+                    <a href="${v.link}" target="_blank" class="btn btn-tiktok" style="display:inline-block;text-align:center;text-decoration:none;margin-top:8px;">▶️ Tonton di TikTok</a>
+                </div>
+            `).join('');
+        }
+
+        // === IDE BARU ===
+        const ideTambahan = [
+            {judul:"📸 Tampilkan Proses", isi:"Rekam saat kamu sedang membuat karya — orang suka melihat perjalanan di balik layar"},
+            {judul:"💬 Tanya Penonton", isi:"Ajukan pertanyaan di akhir video, minta pendapat mereka. Interaksi memperkuat akunmu"},
+            {judul:"✨ Satu Hal yang Saya Syukuri", isi:"Ceritakan satu hal kecil yang membuatmu bersyukur hari ini — sederhana tapi menyentuh hati"},
+            {judul:"🎯 Tujuan Minggu Ini", isi:"Apa yang ingin kamu capai minggu ini? Bagikan, biar kita sama-sama semangat!"},
+            {judul:"📚 Pelajaran Hari Ini", isi:"Apa satu hal baru yang kamu pelajari hari ini? Bagikan secara sederhana"},
+        ];
+        let indeksIde = 0;
+        document.getElementById('ideBaru').addEventListener('click', () => {
+            const ide = ideTambahan[indeksIde % ideTambahan.length];
+            const kotak = document.createElement('div');
+            kotak.className = 'idea-box';
+            kotak.innerHTML = `<strong>${ide.judul}</strong><p style="color:var(--text-muted);margin-top:5px;">${ide.isi}</p>`;
+            document.querySelector('#ide .card').insertBefore(kotak, document.getElementById('ideBaru'));
+            indeksIde++;
+        });
+    </script>
+</body>
+</html>
